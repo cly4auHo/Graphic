@@ -11,11 +11,11 @@ public class PlotManager : MonoBehaviour
     [SerializeField] private LineRenderer langrangeLineRenderer;
 
     delegate Vector2 Function(float x, float y);
-    private Function function;
+    private Function lsmfunction;
     private Function lagrangefunction;
 
     private LSM lsm;
-    private LgApproximator lgaproximator;
+    private LgApproximator lagrangeproximator;
 
     void Start()
     {
@@ -39,7 +39,7 @@ public class PlotManager : MonoBehaviour
             yArr[i] = dots[i].position.y;
         }
 
-        lgaproximator = new LgApproximator(xArr, yArr, degreeOrder + 1);
+        lagrangeproximator = new LgApproximator(xArr, yArr, degreeOrder + 1);
         
         lagrangefunction = (x, y) =>
         {
@@ -47,7 +47,7 @@ public class PlotManager : MonoBehaviour
 
             for (int i = 0; i < degreeOrder; i++)
             {
-                yValue = lgaproximator.InterpolateLagrangePolynomial(x);
+                yValue = lagrangeproximator.InterpolateLagrangePolynomial(x);
             }
             return new Vector2(x, yValue);
         };
@@ -66,7 +66,7 @@ public class PlotManager : MonoBehaviour
         lsm = new LSM(xArr, yArr);
         lsm.Polynomial(degreeOrder);
 
-        function = (x, y) =>
+        lsmfunction = (x, y) =>
         {
             float yValue = 0;
 
@@ -90,7 +90,7 @@ public class PlotManager : MonoBehaviour
 
         for (int i = -scale; i < scale; i++)
         {
-            var lsmPointPosition = function(i * step, i * step);
+            var lsmPointPosition = lsmfunction(i * step, i * step);
             var lgPosition = lagrangefunction(i * step, i * step);
 
             lsmLineRenderer.SetPosition(i + scale, lsmPointPosition);
