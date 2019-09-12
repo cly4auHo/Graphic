@@ -12,8 +12,11 @@ public class PlotManager : MonoBehaviour
 
     delegate Vector2 Function(float x, float y);
     private Function function;
+    private Function lagrangefunction;
+
     private LSM lsm;
-    
+    private LgApproximator lgaproximator;
+
     void Start()
     {
         InitalizeLineRenderer();
@@ -22,9 +25,33 @@ public class PlotManager : MonoBehaviour
     void Update()
     {
         CalculateLSM();
+        CalculateLagrange();
         PopulateGraph();
     }
+    void CalculateLagrange()
+    {
+        var xArr = new float[dots.Length];
+        var yArr = new float[dots.Length];
 
+        for (int i = 0; i < dots.Length; i++)
+        {
+            xArr[i] = dots[i].position.x;
+            yArr[i] = dots[i].position.y;
+        }
+
+        lgaproximator = new LgApproximator(xArr, yArr, degreeOrder + 1);
+        
+        lagrangefunction = (x, y) =>
+        {
+            float yValue = 0;
+
+            for (int i = 0; i < degreeOrder; i++)
+            {
+                yValue = lgaproximator.InterpolateLagrangePolynomial(x);
+            }
+            return new Vector2(x, yValue);
+        };
+    }
     void CalculateLSM()
     {
         var xArr = new float[dots.Length];
@@ -47,11 +74,10 @@ public class PlotManager : MonoBehaviour
             {
                 yValue += Mathf.Pow(x, i) * lsm.Coeff[i];
             }
-
             return new Vector2(x, yValue);
         };
     }
-   
+
     void InitalizeLineRenderer()
     {
         lsmLineRenderer.positionCount = scale * 2;
@@ -62,19 +88,11 @@ public class PlotManager : MonoBehaviour
     {
         float step = screenSize / scale;
 
-        var xArr = new float[dots.Length];
-        var yArr = new float[dots.Length];
-
-        for (int i = 0; i < dots.Length; i++)
-        {
-            xArr[i] = dots[i].position.x;
-            yArr[i] = dots[i].position.y;
-        }
-
         for (int i = -scale; i < scale; i++)
         {
             var lsmPointPosition = function(i * step, i * step);
-            var lgPosition = new Vector3(i * step, LgApproximator.InterpolateLagrangePolynomial(i * step, xArr, yArr, degreeOrder + 1));
+            var lgPosition = lagrangefunction(i * step, i * step);
+
             lsmLineRenderer.SetPosition(i + scale, lsmPointPosition);
             langrangeLineRenderer.SetPosition(i + scale, lgPosition);
         }

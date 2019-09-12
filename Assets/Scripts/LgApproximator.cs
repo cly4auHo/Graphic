@@ -1,8 +1,19 @@
 ﻿using System;
 
-static class LgApproximator
+public class LgApproximator
 {
-    public static float InterpolateLagrangePolynomial(float x, float[] xValues, float[] yValues, int size)
+    private float[] xValues;
+    private float[] yValues;
+    int size;
+
+    public LgApproximator(float[] xValues, float[] yValues, int size)
+    {
+        this.xValues = xValues;
+        this.yValues = yValues;
+        this.size = size;
+    }
+
+    public float InterpolateLagrangePolynomial(float x)
     {
         float lagrangePol = 0;
 

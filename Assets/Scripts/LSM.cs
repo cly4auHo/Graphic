@@ -25,8 +25,8 @@ public class LSM
    
     public void Polynomial(int m)
     {
-        if (m <= 0) throw new ArgumentException("Порядок полинома должен быть больше 0");
-        if (m >= X.Length) throw new ArgumentException("Порядок полинома должен быть на много меньше количества точек!");
+        if (m <= 0) throw new ArgumentException("Degree of polynomial must be more than 0");
+        if (m >= X.Length) throw new ArgumentException("Order degree of polynomial must be less than a quantity of dots!");
        
         float[,] basic = new float[X.Length, m + 1];
        
@@ -34,22 +34,19 @@ public class LSM
             for (int j = 0; j < basic.GetLength(1); j++)
                 basic[i, j] = (float)Math.Pow(X[i], j);
 
-        // Создание матрицы из массива значений базисных функций(МЗБФ)
+        // create a Matrix
         Matrix basicFuncMatr = new Matrix(basic);
 
-        // Транспонирование МЗБФ
+        //transpose of Matrix
         Matrix transBasicFuncMatr = basicFuncMatr.Transposition();
-
-        // Произведение транспонированного  МЗБФ на МЗБФ
+      
         Matrix lambda = transBasicFuncMatr * basicFuncMatr;
 
-        // Произведение транспонированого МЗБФ на следящую матрицу 
         Matrix beta = transBasicFuncMatr * new Matrix(Y);
 
-        // Решение СЛАУ путем умножения обратной матрицы лямбда на бету
+        // solution of a system of linear equations
         Matrix a = lambda.InverseMatrix() * beta;
-
-        // Присвоение значения полю класса 
+       
         coeff = new float[a.Row];
         for (int i = 0; i < coeff.Length; i++)
         {
@@ -57,7 +54,6 @@ public class LSM
         }
     }
 
-    // Функция нахождения среднеквадратичного отклонения
     private float? getDelta()
     {
         if (coeff == null) return null;
