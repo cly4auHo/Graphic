@@ -850,7 +850,6 @@ MonoBehaviour:
   - {fileID: 598325448}
   - {fileID: 825947703}
   degreeOrder: 4
-  ms: 1
   lsmLineRenderer: {fileID: 947039930}
   langrangeLineRenderer: {fileID: 123760285}
 --- !u!4 &1787022094
