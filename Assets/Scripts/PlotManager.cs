@@ -28,6 +28,7 @@ public class PlotManager : MonoBehaviour
         CalculateLagrange();
         PopulateGraph();
     }
+
     void CalculateLagrange()
     {
         var xArr = new float[dots.Length];
@@ -52,6 +53,7 @@ public class PlotManager : MonoBehaviour
             return new Vector2(x, yValue);
         };
     }
+
     void CalculateLSM()
     {
         var xArr = new float[dots.Length];
